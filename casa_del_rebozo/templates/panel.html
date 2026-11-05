@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Panel — Casa del Rebozo</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='estilos.css') }}">
+</head>
+<body>
+  <header class="encabezado">
+    <div class="barra">
+      <a class="marca" href="{{ url_for('catalogo') }}">Casa del Rebozo</a>
+      <nav class="menu">
+        <a href="{{ url_for('catalogo') }}">Catálogo</a>
+        <a href="{{ url_for('registro') }}">Crear cuenta</a>
+        {% if session.admin %}
+        <a href="{{ url_for('panel') }}" class="activo">Panel</a>
+        <a href="{{ url_for('productos') }}">Productos</a>
+        <a href="{{ url_for('clientes') }}">Clientes</a>
+        <a href="{{ url_for('salir') }}">Salir</a>
+        {% else %}
+        <a href="{{ url_for('login') }}">Administrador</a>
+        {% endif %}
+      </nav>
+    </div>
+    <div class="flecos"></div>
+  </header>
+  <main>
+    {% with msgs = get_flashed_messages(with_categories=true) %}
+    {% if msgs %}
+    <ul class="mensajes" role="status">
+      {% for tipo, texto in msgs %}<li class="{{ tipo }}">{{ texto }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
+    <h1>Panel del administrador</h1>
+    <p class="intro">Un vistazo a lo que hay en la tienda.</p>
+    <section class="resumen">
+      <div class="dato"><strong>{{ datos.productos }}</strong><span>Productos registrados</span></div>
+      <div class="dato"><strong>{{ datos.existencias }}</strong><span>Piezas en existencia</span></div>
+      <div class="dato"><strong>{{ datos.clientes }}</strong><span>Clientes registrados</span></div>
+    </section>
+    <div class="accesos">
+      <a class="boton" href="{{ url_for('productos') }}">Registrar producto</a>
+      <a class="boton claro" href="{{ url_for('clientes') }}">Ver clientes</a>
+      <a class="boton claro" href="{{ url_for('catalogo') }}">Ver catálogo</a>
+    </div>
+  </main>
+  <footer class="pie">Casa del Rebozo</footer>
+</body>
+</html>

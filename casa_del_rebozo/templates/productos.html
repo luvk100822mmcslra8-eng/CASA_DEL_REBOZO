@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Productos — Casa del Rebozo</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='estilos.css') }}">
+</head>
+<body>
+  <header class="encabezado">
+    <div class="barra">
+      <a class="marca" href="{{ url_for('catalogo') }}">Casa del Rebozo</a>
+      <nav class="menu">
+        <a href="{{ url_for('catalogo') }}">Catálogo</a>
+        <a href="{{ url_for('registro') }}">Crear cuenta</a>
+        {% if session.admin %}
+        <a href="{{ url_for('panel') }}">Panel</a>
+        <a href="{{ url_for('productos') }}" class="activo">Productos</a>
+        <a href="{{ url_for('clientes') }}">Clientes</a>
+        <a href="{{ url_for('salir') }}">Salir</a>
+        {% else %}
+        <a href="{{ url_for('login') }}">Administrador</a>
+        {% endif %}
+      </nav>
+    </div>
+    <div class="flecos"></div>
+  </header>
+  <main>
+    {% with msgs = get_flashed_messages(with_categories=true) %}
+    {% if msgs %}
+    <ul class="mensajes" role="status">
+      {% for tipo, texto in msgs %}<li class="{{ tipo }}">{{ texto }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
+    <h1>Registro de productos</h1>
+    <p class="intro">Todo producto con existencias aparece en el catálogo.</p>
+    <form class="formulario ancho" method="post" enctype="multipart/form-data">
+      <div class="campos">
+        <div class="campos dos">
+          <div>
+            <label for="nombre">Nombre</label>
+            <input id="nombre" name="nombre" type="text" required>
+          </div>
+          <div>
+            <label for="categoria">Categoría</label>
+            <select id="categoria" name="categoria" required>
+              <option value="" disabled selected>Elige una</option>
+              {% for c in categorias %}<option>{{ c }}</option>{% endfor %}
+            </select>
+          </div>
+          <div>
+            <label for="precio">Precio (MXN)</label>
+            <input id="precio" name="precio" type="number" step="0.01" min="0.01" required>
+          </div>
+          <div>
+            <label for="cantidad">Cantidad</label>
+            <input id="cantidad" name="cantidad" type="number" step="1" min="0" required>
+          </div>
+        </div>
+        <div>
+          <label for="descripcion">Descripción</label>
+          <textarea id="descripcion" name="descripcion"></textarea>
+        </div>
+        <div>
+          <label for="imagen">Imagen</label>
+          <input id="imagen" name="imagen" type="file" accept="image/*">
+          <p class="ayuda">PNG, JPG, WEBP o GIF, hasta 4 MB.</p>
+        </div>
+        <div><button class="boton" type="submit">Guardar producto</button></div>
+      </div>
+    </form>
+
+    {% if lista %}
+    <div class="tabla-caja">
+      <table>
+        <thead><tr><th></th><th>Nombre</th><th>Categoría</th><th>Precio</th><th>Cantidad</th><th></th></tr></thead>
+        <tbody>
+          {% for p in lista %}
+          <tr>
+            <td>{% if p.imagen %}<img src="{{ url_for('static', filename='uploads/' ~ p.imagen) }}" alt="">{% endif %}</td>
+            <td>{{ p.nombre }}</td>
+            <td>{{ p.categoria }}</td>
+            <td>{{ p.precio|pesos }}</td>
+            <td>{{ p.cantidad }}</td>
+            <td>
+              <form method="post" action="{{ url_for('eliminar_producto', pid=p.id) }}" onsubmit="return confirm('¿Eliminar este producto?');">
+                <button class="boton peligro" type="submit">Eliminar</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p class="vacio" style="margin-top:2rem">Aún no hay productos. Registra el primero con el formulario.</p>
+    {% endif %}
+  </main>
+  <footer class="pie">Casa del Rebozo</footer>
+</body>
+</html>

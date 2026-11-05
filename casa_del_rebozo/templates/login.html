@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Iniciar sesión — Casa del Rebozo</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='estilos.css') }}">
+</head>
+<body>
+  <header class="encabezado">
+    <div class="barra">
+      <a class="marca" href="{{ url_for('catalogo') }}">Casa del Rebozo</a>
+      <nav class="menu">
+        <a href="{{ url_for('catalogo') }}">Catálogo</a>
+        <a href="{{ url_for('registro') }}">Crear cuenta</a>
+        {% if session.admin %}
+        <a href="{{ url_for('panel') }}">Panel</a>
+        <a href="{{ url_for('productos') }}">Productos</a>
+        <a href="{{ url_for('clientes') }}">Clientes</a>
+        <a href="{{ url_for('salir') }}">Salir</a>
+        {% else %}
+        <a href="{{ url_for('login') }}" class="activo">Administrador</a>
+        {% endif %}
+      </nav>
+    </div>
+    <div class="flecos"></div>
+  </header>
+  <main>
+    {% with msgs = get_flashed_messages(with_categories=true) %}
+    {% if msgs %}
+    <ul class="mensajes" role="status">
+      {% for tipo, texto in msgs %}<li class="{{ tipo }}">{{ texto }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
+    <h1>Acceso del administrador</h1>
+    <p class="intro">Entra para registrar productos y consultar a tus clientes.</p>
+    <form class="formulario" method="post">
+      <div class="campos">
+        <div>
+          <label for="usuario">Usuario</label>
+          <input id="usuario" name="usuario" type="text" autocomplete="username" required autofocus>
+        </div>
+        <div>
+          <label for="contrasena">Contraseña</label>
+          <input id="contrasena" name="contrasena" type="password" autocomplete="current-password" required>
+        </div>
+        <button class="boton" type="submit">Iniciar sesión</button>
+      </div>
+    </form>
+  </main>
+  <footer class="pie">Casa del Rebozo</footer>
+</body>
+</html>

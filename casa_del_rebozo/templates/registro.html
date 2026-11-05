@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Crear cuenta — Casa del Rebozo</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='estilos.css') }}">
+</head>
+<body>
+  <header class="encabezado">
+    <div class="barra">
+      <a class="marca" href="{{ url_for('catalogo') }}">Casa del Rebozo</a>
+      <nav class="menu">
+        <a href="{{ url_for('catalogo') }}">Catálogo</a>
+        <a href="{{ url_for('registro') }}" class="activo">Crear cuenta</a>
+        {% if session.admin %}
+        <a href="{{ url_for('panel') }}">Panel</a>
+        <a href="{{ url_for('productos') }}">Productos</a>
+        <a href="{{ url_for('clientes') }}">Clientes</a>
+        <a href="{{ url_for('salir') }}">Salir</a>
+        {% else %}
+        <a href="{{ url_for('login') }}">Administrador</a>
+        {% endif %}
+      </nav>
+    </div>
+    <div class="flecos"></div>
+  </header>
+  <main>
+    {% with msgs = get_flashed_messages(with_categories=true) %}
+    {% if msgs %}
+    <ul class="mensajes" role="status">
+      {% for tipo, texto in msgs %}<li class="{{ tipo }}">{{ texto }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
+    <h1>Crear cuenta</h1>
+    <p class="intro">Regístrate para recibir novedades de la tienda.</p>
+    <form class="formulario" method="post" novalidate>
+      <div class="campos">
+        <div>
+          <label for="nombre">Nombre completo</label>
+          <input id="nombre" name="nombre" type="text" value="{{ v.nombre }}" autocomplete="name" required>
+        </div>
+        <div>
+          <label for="correo">Correo</label>
+          <input id="correo" name="correo" type="email" value="{{ v.correo }}" autocomplete="email" required>
+        </div>
+        <div>
+          <label for="telefono">Teléfono</label>
+          <input id="telefono" name="telefono" type="tel" value="{{ v.telefono }}" inputmode="numeric" autocomplete="tel" required>
+          <p class="ayuda">10 dígitos, sin lada internacional.</p>
+        </div>
+        <div>
+          <label for="contrasena">Contraseña</label>
+          <input id="contrasena" name="contrasena" type="password" autocomplete="new-password" required>
+          <p class="ayuda">Mínimo 8 caracteres.</p>
+        </div>
+        <div>
+          <label for="repetir">Repite la contraseña</label>
+          <input id="repetir" name="repetir" type="password" autocomplete="new-password" required>
+        </div>
+        <button class="boton" type="submit">Crear cuenta</button>
+      </div>
+    </form>
+  </main>
+  <footer class="pie">Casa del Rebozo</footer>
+</body>
+</html>
